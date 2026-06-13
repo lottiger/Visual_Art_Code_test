@@ -1,0 +1,336 @@
+/* ----------------------------------------------------------------------------
+   ICA Nära – digital annons (1080×1920)
+   Allt drivs av advdata.json. Layout, färg och splash-rörelse är datadrivna.
+---------------------------------------------------------------------------- */
+
+/* Typsnitt ----------------------------------------------------------------- */
+@font-face {
+	font-family: 'ICARubrikBold';
+	src:
+		url('./assets/fonts/ICARubrikBold.woff') format('woff'),
+		url('./assets/fonts/ICARubrikBold.ttf') format('truetype');
+	font-display: block;
+}
+@font-face {
+	font-family: 'ICARubrikSiffror';
+	src:
+		url('./assets/fonts/icarubriksiffror-webfont.woff2') format('woff2'),
+		url('./assets/fonts/icarubriksiffror-webfont.woff') format('woff');
+	font-display: block;
+}
+@font-face {
+	font-family: 'ICATextBlack';
+	src:
+		url('./assets/fonts/icatext-black-webfont.woff2') format('woff2'),
+		url('./assets/fonts/icatext-black-webfont.woff') format('woff');
+	font-display: block;
+}
+@font-face {
+	font-family: 'ICATextWebRegular';
+	src:
+		url('./assets/fonts/ICATextWebRegular.woff') format('woff'),
+		url('./assets/fonts/ICATextWebRegular.ttf') format('truetype');
+	font-display: block;
+}
+
+/* Grund -------------------------------------------------------------------- */
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	height: 100%;
+	margin: 0;
+}
+
+body {
+	background: #f4f1f1;
+	overflow: hidden;
+}
+
+/* Skärmen: fast 1080×1920, centreras och skalas av main.js för förhandsvisning.
+   translate(-50%, -50%) + scale håller den centrerad oavsett fönsterstorlek. */
+.stage {
+	--splash-color: #e1220f; /* splashens röda (uppmätt i referensen), override:as vid kortpris */
+
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 1080px;
+	height: 1920px;
+	overflow: hidden;
+	background: #fff;
+	transform-origin: center center;
+	box-shadow: 0 30px 90px rgba(0, 0, 0, 0.28); /* lyfter kortet i förhandsvisningen */
+}
+
+/* Maner (banderoll) -------------------------------------------------------- */
+.banner {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 285px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	background: url('/maner.png') center / 100% 100% no-repeat;
+}
+
+.banner__text {
+	margin: 0;
+	font-family: 'ICARubrikBold';
+	font-style: normal;
+	font-size: 145px;
+	font-weight: normal;
+	line-height: 1;
+	letter-spacing: -2px;
+	white-space: nowrap;
+	color: #fff;
+}
+
+/* Produktbild -------------------------------------------------------------- */
+.product {
+	position: absolute;
+	top: 300px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: auto;
+	height: 800px;
+}
+
+/* Splash ------------------------------------------------------------------- */
+.splash {
+	position: absolute;
+	left: 250.5px;
+	top: 1060px;
+	width: 588px;
+	aspect-ratio: 588 / 497;
+	display: grid;
+	place-items: center;
+	transform-origin: center center;
+	z-index: 2;
+}
+
+.splash__shape {
+	position: absolute;
+	inset: 0;
+	background: var(--splash-color);
+	-webkit-mask: url('/splash.svg') center / contain no-repeat;
+	mask: url('/splash.svg') center / contain no-repeat;
+}
+
+.price {
+	position: relative;
+	left: 20px;
+	margin: 0;
+	display: flex;
+	align-items: stretch;
+	line-height: 0.8;
+	color: #000;
+	font-family: 'ICARubrikSiffror';
+}
+
+.price__kr {
+	font-size: 284px;
+}
+
+.price__frac {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-left: 8px;
+}
+
+.price__ore {
+	font-size: 142px;
+}
+
+.price__unit {
+	font-family: 'ICATextBlack';
+	font-size: 62px;
+	line-height: 1;
+	margin-bottom: 12px;
+}
+
+/* Artikeltext -------------------------------------------------------------- */
+.article {
+	position: absolute;
+	left: 88px;
+	bottom: 40px;
+	text-align: left;
+}
+
+.article__name {
+	margin: 0;
+	font-family: 'ICATextBlack';
+	font-size: 70px;
+	font-weight: normal;
+	line-height: 1;
+	color: #111;
+}
+
+.article__meta {
+	margin: 14px 0 0;
+	font-family: 'ICATextWebRegular';
+	font-size: 40px;
+	line-height: 1.2;
+	color: #444;
+}
+
+/* Uppgift 3: layout veckans_kortpris → rosa maner + splash ----------------- */
+.stage.veckans_kortpris {
+	--splash-color: #f8b9d4;
+}
+
+.stage.veckans_kortpris .banner {
+	/* Rosa maner – samma streck-geometri som maner.png, men rosa istället för röd */
+	background: linear-gradient(
+		to bottom,
+		#f8b9d4 0 84.3%,
+		#fff 84.3% 85.7%,
+		#f8b9d4 85.7% 87.7%,
+		#fff 87.7% 89.3%,
+		#f8b9d4 89.3% 94.3%,
+		#fff 94.3% 95.7%,
+		#f8b9d4 95.7% 99%,
+		#fff 99% 100%
+	);
+}
+
+.stage.veckans_kortpris .banner__text {
+	font-size: 120px; /* "Veckans kortpris!" är längre */
+}
+
+/* ----------------------------------------------------------------------------
+   Splash-rörelser
+   Annonsskaparen väljer rörelse via "splash_motion" i advdata.json.
+   Tillgängliga värden: slingshot (default), sway, pulse, pop, drop.
+---------------------------------------------------------------------------- */
+.splash[data-motion='slingshot'] {
+	transform-origin: 50% -80%; /* pivot ovanför = hänger i ett snöre från toppen */
+	animation: splash-slingshot 10s infinite;
+}
+.splash[data-motion='sway'] {
+	animation: splash-sway 2.6s ease-in-out infinite;
+}
+.splash[data-motion='pulse'] {
+	animation: splash-pulse 2.2s ease-in-out infinite;
+}
+.splash[data-motion='pop'] {
+	animation: splash-pop 3.6s infinite;
+}
+.splash[data-motion='drop'] {
+	animation: splash-drop 4s infinite;
+}
+
+/* Referensrörelse (total 10 s): dras in horisontellt från vänster, tvärstannar
+   i mitten så trögheten slungar pendeln kraftigt åt vänster, pendlar in till ro,
+   hänger still i 8 s och åker till sist snabbt ut till höger. Svängen drivs av
+   rotation kring pivoten ovanför (snöret); translateX bara för in-/utgången. */
+@keyframes splash-slingshot {
+	0% {
+		transform: translateX(-200%) rotate(0deg);
+		animation-timing-function: cubic-bezier(0.4, 0, 1, 0.9);
+	} /* dras in horisontellt från vänster (hänger rakt) ... */
+	2% {
+		transform: translateX(0) rotate(0deg);
+		animation-timing-function: ease-out;
+	} /* ... tvärstannar i mitten */
+	4% {
+		transform: translateX(0) rotate(-36deg);
+		animation-timing-function: ease-in-out;
+	} /* trögheten slungar pendeln kraftigt åt vänster */
+	6.5% {
+		transform: translateX(0) rotate(16deg);
+		animation-timing-function: ease-in-out;
+	} /* svänger friare tillbaka åt höger */
+	9% {
+		transform: translateX(0) rotate(-7deg);
+		animation-timing-function: ease-in-out;
+	} /* pendlar fram och tillbaka, dämpas mjukt */
+	11% {
+		transform: translateX(0) rotate(3deg);
+		animation-timing-function: ease-in-out;
+	}
+	12.5% {
+		transform: translateX(0) rotate(-1deg);
+		animation-timing-function: ease-out;
+	}
+	14% {
+		transform: translateX(0) rotate(0deg);
+		animation-timing-function: linear;
+	} /* hänger stilla i mitten */
+	94% {
+		transform: translateX(0) rotate(0deg);
+		animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.4);
+	} /* står still i 8 s, accelererar sedan ut */
+	100% {
+		transform: translateX(190%) rotate(20deg);
+	} /* åker snabbt ut åt höger */
+}
+
+@keyframes splash-sway {
+	0%,
+	100% {
+		transform: rotate(-7deg);
+	}
+	50% {
+		transform: rotate(7deg);
+	}
+}
+
+@keyframes splash-pulse {
+	0%,
+	100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.08);
+	}
+}
+
+@keyframes splash-pop {
+	0% {
+		transform: scale(0) rotate(-20deg);
+		animation-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+	18% {
+		transform: scale(1.05) rotate(4deg);
+		animation-timing-function: ease-out;
+	}
+	28% {
+		transform: scale(1) rotate(0);
+	}
+	85% {
+		transform: scale(1) rotate(0);
+		animation-timing-function: ease-in;
+	}
+	100% {
+		transform: scale(0) rotate(20deg);
+	}
+}
+
+@keyframes splash-drop {
+	0% {
+		transform: translateY(-230%) rotate(-8deg);
+		animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.4);
+	}
+	22% {
+		transform: translateY(0) rotate(0);
+		animation-timing-function: cubic-bezier(0.2, 1.4, 0.4, 1);
+	}
+	30% {
+		transform: translateY(-12%) rotate(2deg);
+		animation-timing-function: ease-in-out;
+	}
+	38% {
+		transform: translateY(0) rotate(0);
+	}
+	100% {
+		transform: translateY(0) rotate(0);
+	}
+}
