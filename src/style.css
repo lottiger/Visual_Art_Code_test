@@ -187,17 +187,27 @@ body {
 }
 
 .stage.veckans_kortpris .banner {
-	/* Rosa maner – samma streck-geometri som maner.png, men rosa istället för röd */
+	/* Rosa maner – samma streck-geometri som maner.png, men rosa istället för röd.
+	   Färgen interpolerar över den 1px-rad som är kantutjämnad i
+	   originalet */
 	background: linear-gradient(
 		to bottom,
-		#f8b9d4 0 84.3%,
-		#fff 84.3% 85.7%,
-		#f8b9d4 85.7% 87.7%,
-		#fff 87.7% 89.3%,
-		#f8b9d4 89.3% 94.3%,
-		#fff 94.3% 95.7%,
-		#f8b9d4 95.7% 99%,
-		#fff 99% 100%
+		#f8b9d4 0,
+		#f8b9d4 84.33%,
+		#fff 84.67%,
+		#fff 85.67%,
+		#f8b9d4 86%,
+		#f8b9d4 87.67%,
+		#fff 88%,
+		#fff 89%,
+		#f8b9d4 89.33%,
+		#f8b9d4 94.33%,
+		#fff 94.67%,
+		#fff 95.67%,
+		#f8b9d4 96%,
+		#f8b9d4 99%,
+		#fff 99.33%,
+		#fff 100%
 	);
 }
 
